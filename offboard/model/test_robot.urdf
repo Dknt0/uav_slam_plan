@@ -1,0 +1,70 @@
+<robot name="test">
+
+  <link name="base_link">
+    <!-- 可视化 -->
+    <visual>
+      <!-- 形状 -->
+      <geometry>
+        <box size="0.5 0.3 0.1" />
+      </geometry>
+      <!-- 位姿 -->
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <!-- 颜色 -->
+      <material name="black">
+        <color rgba="0.7 0.5 0 0.5" />
+      </material>
+    </visual>
+    <!-- 碰撞 -->
+    <collision>
+      <geometry>
+        <box size="0.5 0.2 0.1" />
+      </geometry>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+    </collision>
+    <!-- 惯性 -->
+    <inertial>
+      <origin xyz="0 0 0" />
+      <mass value="6" />
+      <inertia ixx="1" ixy="0" ixz="0" iyy="1" iyz="0" izz="1" />
+    </inertial>
+  </link>
+
+  <gazebo reference="base_link">
+    <sensor type="depth" name="camera">
+      <always_on>true</always_on>
+      <update_rate>20.0</update_rate>
+      <camera>
+        <horizontal_fov>1.5009831567</horizontal_fov>
+        <image>
+          <format>R8G8B8</format>
+          <width>848</width>
+          <height>480</height>
+        </image>
+        <clip>
+          <near>0.05</near>
+          <far>8.0</far>
+        </clip>
+      </camera>
+      <plugin name="kinect_camera_controller" filename="libgazebo_ros_openni_kinect.so">
+        <cameraName>camera</cameraName>
+        <alwaysOn>true</alwaysOn>
+        <updateRate>10</updateRate>
+        <imageTopicName>rgb/image_raw</imageTopicName>
+        <depthImageTopicName>depth/image_raw</depthImageTopicName>
+        <pointCloudTopicName>depth/points</pointCloudTopicName>
+        <cameraInfoTopicName>rgb/camera_info</cameraInfoTopicName>
+        <depthImageCameraInfoTopicName>depth/camera_info</depthImageCameraInfoTopicName>
+        <frameName>support_depth</frameName> <!-- 点云坐标系-->
+        <baseline>0.1</baseline>
+        <distortion_k1>0.0</distortion_k1>
+        <distortion_k2>0.0</distortion_k2>
+        <distortion_k3>0.0</distortion_k3>
+        <distortion_t1>0.0</distortion_t1>
+        <distortion_t2>0.0</distortion_t2>
+        <pointCloudCutoff>0.4</pointCloudCutoff>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+
+</robot>
