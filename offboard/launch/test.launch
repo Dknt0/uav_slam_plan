@@ -1,13 +1,14 @@
 <launch>
-  <!-- 将 urdf 文件的内容加载到参数服务器 -->
-  <param name="robot_description" textfile="$(find offboard)/model/test_robot.urdf" />
 
-  <!-- 启动 gazebo，空世界 -->
-  <include file="$(find gazebo_ros)/launch/empty_world.launch" />
+  <include file="$(find offboard)/launch/single_vehicle_spawn.launch">
+    <arg name="vehicle" value="iris_depth_camera" />
+    <arg name="world" value="$(find offboard)/world/avoidance.world" />
+  </include>
 
-  <!-- 在 gazebo 中生成机器人模型 -->
-  <!-- urdf 是可行的 -->
-  <!-- <node pkg="gazebo_ros" type="spawn_model" name="model" args="-urdf -model robot -param robot_description -x 0.0 -y 0.0 -z 0.0" /> -->
-  <node pkg="gazebo_ros" type="spawn_model" name="model" args="-sdf -file /home/dknt/Projects/uav_ws/src/offboard/model/test.sdf -model haha" />
+  <node pkg="tf" type="static_transform_publisher" name="uav"
+    args="0.0 0.0 0 0.0 0.0 0.0 /world /autopilot_odom 40" />
+
+
+  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find offboard)/config/rviz.config.rviz" />
 
 </launch>

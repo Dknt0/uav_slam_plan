@@ -88,7 +88,7 @@ Autopilot::Autopilot(const std::string port) : port_(port) {
     position_lock_.unlock();
   });
 
-  // velocity callback ned
+  // velocity callback NED
   {
     auto error = telemetry_->set_rate_velocity_ned(telemetry_update_rate_);
     if (error != mavsdk::Telemetry::Result::Success) {
@@ -123,8 +123,7 @@ Autopilot::Autopilot(const std::string port) : port_(port) {
   {
     auto error = telemetry_->set_rate_imu(telemetry_update_rate_);
     if (error != mavsdk::Telemetry::Result::Success) {
-      std::cout << AUTOPILOT_ERROR_HEAD
-                << "Failed to set telemetry imu rate: "
+      std::cout << AUTOPILOT_ERROR_HEAD << "Failed to set telemetry imu rate: "
                 << static_cast<int>(error) << std::endl;
     }
   }

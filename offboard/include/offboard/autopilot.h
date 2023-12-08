@@ -33,9 +33,9 @@ class Autopilot {
   bool Takeoff(const float altitude);
   bool Land();
 
-  // bool StartOffboardPosition();
-  // bool ExitOffboardPosition();
-  // bool SetPointPosition();
+  bool StartOffboardPosition();
+  bool ExitOffboardPosition();
+  bool SetPointPosition();
 
   bool StartOffboardVelocity();
   bool FinishOffboardVelocity();
@@ -65,7 +65,7 @@ class Autopilot {
 
   }
 
- private:
+ protected:
   std::string port_;
   std::shared_ptr<mavsdk::Mavsdk> mavsdk_;
   std::shared_ptr<mavsdk::System> system_;

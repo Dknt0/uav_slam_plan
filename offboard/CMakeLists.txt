@@ -9,6 +9,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   std_msgs
+  geometry_msgs
+  sensor_msgs
+  nav_msgs
 )
 set(MAVSDK_DIR "/home/dknt/Library/mavsdk_install/lib/cmake/MAVSDK")
 find_package(MAVSDK REQUIRED)
@@ -32,7 +35,11 @@ include_directories(
 )
 
 
-add_executable(simple_test src/simple_test.cc src/autopilot.cc)
+add_executable(simple_test 
+  src/simple_test.cc
+  src/autopilot.cc
+  src/autopilot_ros1.cc
+)
 target_link_libraries(simple_test
   ${catkin_LIBRARIES}
   MAVSDK::mavsdk
