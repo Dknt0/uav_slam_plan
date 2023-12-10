@@ -7,22 +7,20 @@
 #ifndef OFFBOARD_AUTOPILOT_H
 #define OFFBOARD_AUTOPILOT_H
 
-#include <chrono>
-#include <iostream>
-#include <mutex>
-#include <thread>
-#include <future>
-
 #include <mavsdk/log_callback.h>
 #include <mavsdk/mavsdk.h>
 #include <mavsdk/plugins/action/action.h>
 #include <mavsdk/plugins/offboard/offboard.h>
 #include <mavsdk/plugins/telemetry/telemetry.h>
+#include <mavsdk/geometry.h>
 
 #include <Eigen/Core>
 #include <Eigen/Geometry>
-
-
+#include <chrono>
+#include <future>
+#include <iostream>
+#include <mutex>
+#include <thread>
 
 class Autopilot {
  public:
@@ -32,65 +30,64 @@ class Autopilot {
   bool Arm();
   bool Takeoff(const float altitude);
   bool Land();
+  bool GotoPosition(float t_front, float t_left, float t_up, float t_yaw);
 
+  // 位置外部控制不可用
   bool StartOffboardPosition();
   bool ExitOffboardPosition();
-  bool SetPointPosition();
+  bool SetPointOffboardPosition(float t_north, float t_east, float t_down,
+                                float t_yaw);
 
   bool StartOffboardVelocity();
-  bool FinishOffboardVelocity();
-  bool SetPointOffboardVelocity(float v_down = 0., float w_yaw = 0., float v_forward = 0., float v_right = 0.);
+  bool ExitOffboardVelocity();
+  bool SetPointOffboardVelocity(float v_down = 0., float w_yaw = 0.,
+                                float v_forward = 0., float v_right = 0.);
 
   std::thread test_thread_;
-  void Test() {
-    auto ThreadFunction = [&]() {
-      while (true) {
-        {
-          std::unique_lock<std::mutex> lock(odometry_lock_);
-          std::cout << "Odom position body: " << odometry_.position_body.x_m
-                    << " " << odometry_.position_body.y_m << " "
-                    << odometry_.position_body.z_m << std::endl;
-
-          Eigen::Quaternionf q(odometry_.q.w, odometry_.q.x, odometry_.q.y,
-                               odometry_.q.z);
-          auto eular_angle = q.toRotationMatrix().eulerAngles(2, 1, 0);
-          std::cout << "Odom orientation: yaw " << eular_angle[0] << " pitch "
-                    << eular_angle[1] << " roll " << eular_angle[2] << std::endl;
-        }
-
-        std::this_thread::sleep_for(std::chrono::microseconds(500));
-      }
-    };
-    test_thread_ = std::thread(ThreadFunction);
-
-  }
+  void CoordinateTest();
 
  protected:
+  // MAVSDK 工具
   std::string port_;
   std::shared_ptr<mavsdk::Mavsdk> mavsdk_;
   std::shared_ptr<mavsdk::System> system_;
   std::shared_ptr<mavsdk::Telemetry> telemetry_;
   std::shared_ptr<mavsdk::Action> action_;
   std::shared_ptr<mavsdk::Offboard> offboard_;
-
-  mavsdk::Telemetry::Position position_ned_;
-  std::mutex position_lock_;
-  mavsdk::Telemetry::VelocityNed velocity_ned_;
-  std::mutex velocity_ned_lock_;
+  std::shared_ptr<mavsdk::geometry::CoordinateTransformation> transformer_;
+  
+  // 初始状态
+  // Eigen::Isometry3f T_ned_body_origin;
+  mavsdk::Telemetry::Position initial_global_pos_;
+  mavsdk::Telemetry::EulerAngle initlal_orientation_;
+  Eigen::Quaterniond q_Wned_Wfrd_;
+  Eigen::Quaterniond q_Wned_Wflu_;
+  // 状态变量
+  mavsdk::Telemetry::PositionVelocityNed position_velocity_ned_;
   mavsdk::Telemetry::Odometry odometry_;
-  std::mutex odometry_lock_;
   mavsdk::Telemetry::Imu imu_;
-  std::mutex imu_lock_;
+  std::mutex data_lock_;
+  // mavsdk::Telemetry::VelocityNed velocity_ned_;
 
+  // 速度外部控制
+  // TODO 标志位暂时未用
+  bool offboard_velocity_flag = false;
   std::thread offboard_velocity_thread_;
   mavsdk::Offboard::VelocityBodyYawspeed velocity_setpoint_{0, 0, 0, 0};
   std::mutex velocity_setpoint_lock_;
   std::promise<void> offboard_velocity_promise_;
   std::future<void> offboard_velocity_future_;
 
-  double telemetry_update_rate_ = 100.;
+  // 位置外部控制
+  // MAVSDK 暂时不支持位置外部控制
+  bool offboard_position_flag = false;
+  std::thread offboard_position_thread_;
+  mavsdk::Offboard::PositionNedYaw position_setpoint_{0, 0, 0, 0};
+  std::mutex position_setpoint_lock_;
+  std::promise<void> offboard_position_promise_;
+  std::future<void> offboard_position_future_;
 
-
+  double telemetry_update_rate_ = 50.;
 };
 
 #endif  // OFFBOARD_AUTOPILOT_H

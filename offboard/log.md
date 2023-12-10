@@ -1,4 +1,4 @@
-# 研二上 nirs & kr 记录
+# 研二上 kr & nirs 记录
 
 > ORB-SLAM 还没读完，不知道做点什么好。好难。
 > 尝试实现一个 ESKF VIO，加上 ego-planner 的路径规划吧，之后想想 SLAM 能怎么发论文
@@ -62,5 +62,12 @@ ego-planner 调试还没有完成
 
 赶紧弄完吧，之后仔细读读 ORB 源码、新论文，想想怎么发文章。别人看的是论文，技术能力再强能怎么样。没人在乎的，除了我自己。
 
+# 2023.12.10
 
+ego-planner 的控制是发送位置点，需要实现 mavsdk 位置控制。但是 mavsdk offboard mode 中的 position setpoint 还没有开发，我得自己写...
 
+基于 action goto_position 写一个，需要传入全局 latitute, longitute, altitude, yaw angle，坐标变换有些问题。并且 local NED 和 body FRD 不完全重合。需要在类内记录初始位置、姿态。
+
+**已解决** 类内调用位置控制时会报错，可能是由于开了太多 Callback，单写的 position_test.cc 不存在问题。
+
+> 原因：占用了锁，导致队列满

@@ -45,3 +45,12 @@ target_link_libraries(simple_test
   MAVSDK::mavsdk
 )
 
+add_executable(position_test 
+  src/position_test.cc
+  src/autopilot.cc
+  src/autopilot_ros1.cc
+)
+target_link_libraries(position_test
+  ${catkin_LIBRARIES}
+  MAVSDK::mavsdk
+)

@@ -31,6 +31,53 @@
 #define AUTOPILOT_ERROR_HEAD   BOLDRED   << "[Autopilot] " << RESET
 // clang-format on
 
+/// @brief 角度转弧度，不归一化处理
+/// @tparam T
+/// @param deg
+/// @return
+template <typename T>
+inline T Deg2Rad(const T deg) {
+  return (deg * T(M_PI) / T(180));
+}
+
+/// @brief 弧度转角度，不归一化处理
+/// @tparam T
+/// @param rad
+/// @return
+template <typename T>
+inline T Rad2Deg(const T rad) {
+  return (rad * T(180) / T(M_PI));
+}
+
+/// @brief 角归一化 度
+/// @tparam T
+/// @param deg
+/// @return
+template <typename T>
+inline T NormolizeAngelDeg(const T deg) {
+  if (deg > T(360))
+    return (deg - 360);
+  else if (deg < T(0))
+    return (deg + 360);
+  else
+    return deg;
+}
+
+/// @brief 角归一化 弧度
+/// @tparam T
+/// @param rad
+/// @return
+template <typename T>
+inline T NormolizeAngelRad(const T rad) {
+  T double_pi = T(M_PI * 2);
+  if (rad > T(M_PI))
+    return (rad - double_pi);
+  else if (rad < -T(M_PI))
+    return (rad + double_pi);
+  else
+    return rad;
+}
+
 using namespace std::chrono_literals;
 
 /// @brief 构造函数
@@ -73,36 +120,38 @@ Autopilot::Autopilot(const std::string port) : port_(port) {
   offboard_ = std::make_shared<mavsdk::Offboard>(system_);
   std::cout << AUTOPILOT_MESSAGE_HEAD << "Connected." << std::endl;
 
-  // position callback NED
+  // position velocity callback NED
   {
-    auto error = telemetry_->set_rate_position(telemetry_update_rate_);
+    auto error =
+        telemetry_->set_rate_position_velocity_ned(telemetry_update_rate_);
     if (error != mavsdk::Telemetry::Result::Success) {
       std::cout << AUTOPILOT_ERROR_HEAD
-                << "Failed to setting telemetry position rate: "
+                << "Failed to setting telemetry position velocity rate: "
                 << static_cast<int>(error) << std::endl;
     }
   }
-  telemetry_->subscribe_position([this](mavsdk::Telemetry::Position position) {
-    position_lock_.lock();
-    this->position_ned_ = position;
-    position_lock_.unlock();
-  });
-
-  // velocity callback NED
-  {
-    auto error = telemetry_->set_rate_velocity_ned(telemetry_update_rate_);
-    if (error != mavsdk::Telemetry::Result::Success) {
-      std::cout << AUTOPILOT_ERROR_HEAD
-                << "Failed to setting telemetry velocity rate: "
-                << static_cast<int>(error) << std::endl;
-    }
-  }
-  telemetry_->subscribe_velocity_ned(
-      [this](mavsdk::Telemetry::VelocityNed velocity_ned) {
-        velocity_ned_lock_.lock();
-        this->velocity_ned_ = velocity_ned;
-        velocity_ned_lock_.unlock();
+  telemetry_->subscribe_position_velocity_ned(
+      [this](mavsdk::Telemetry::PositionVelocityNed position_velocity_ned) {
+        data_lock_.lock();
+        this->position_velocity_ned_ = position_velocity_ned;
+        data_lock_.unlock();
       });
+
+  // // velocity callback NED
+  // {
+  //   auto error = telemetry_->set_rate_velocity_ned(telemetry_update_rate_);
+  //   if (error != mavsdk::Telemetry::Result::Success) {
+  //     std::cout << AUTOPILOT_ERROR_HEAD
+  //               << "Failed to setting telemetry velocity rate: "
+  //               << static_cast<int>(error) << std::endl;
+  //   }
+  // }
+  // telemetry_->subscribe_velocity_ned(
+  //     [this](mavsdk::Telemetry::VelocityNed velocity_ned) {
+  //       velocity_ned_lock_.lock();
+  //       this->velocity_ned_ = velocity_ned;
+  //       velocity_ned_lock_.unlock();
+  //     });
 
   // odometry callback
   {
@@ -114,9 +163,9 @@ Autopilot::Autopilot(const std::string port) : port_(port) {
     }
   }
   telemetry_->subscribe_odometry([this](mavsdk::Telemetry::Odometry odometry) {
-    odometry_lock_.lock();
+    data_lock_.lock();
     this->odometry_ = odometry;
-    odometry_lock_.unlock();
+    data_lock_.unlock();
   });
 
   // IMU callback
@@ -128,10 +177,50 @@ Autopilot::Autopilot(const std::string port) : port_(port) {
     }
   }
   telemetry_->subscribe_imu([this](mavsdk::Telemetry::Imu imu) {
-    imu_lock_.lock();
+    data_lock_.lock();
     this->imu_ = imu;
-    imu_lock_.unlock();
+    data_lock_.unlock();
   });
+
+  // // Set initial global location
+  // mavsdk::Telemetry::PositionVelocityNed initial_position_ned_ =
+  //     telemetry_->position_velocity_ned();
+  // mavsdk::Telemetry::EulerAngle initial_attitude_ =
+  //     telemetry_->attitude_euler();
+  // Eigen::Vector3f init_position(initial_position_ned_.position.north_m,
+  //                               initial_position_ned_.position.east_m,
+  //                               initial_position_ned_.position.down_m);
+  // float roll_rad = Deg2Rad(initial_attitude_.roll_deg);
+  // float pitch_rad = Deg2Rad(initial_attitude_.pitch_deg);
+  // float yaw_rad = Deg2Rad(initial_attitude_.yaw_deg);
+  // Eigen::Quaternionf init_orientation =
+  //     Eigen::AngleAxisf(roll_rad, Eigen::Vector3f::UnitX()) *
+  //     Eigen::AngleAxisf(pitch_rad, Eigen::Vector3f::UnitY()) *
+  //     Eigen::AngleAxisf(yaw_rad, Eigen::Vector3f::UnitZ());
+  // T_ned_body_origin = Eigen::Isometry3f(init_orientation);
+  // T_ned_body_origin.pretranslate(init_position);
+
+  // 获取初始全局位姿
+  initial_global_pos_ = telemetry_->position();
+  initlal_orientation_ = telemetry_->attitude_euler();
+  mavsdk::geometry::CoordinateTransformation::GlobalCoordinate
+      global_coordinate;
+  global_coordinate.longitude_deg = initial_global_pos_.longitude_deg;
+  global_coordinate.latitude_deg = initial_global_pos_.latitude_deg;
+  transformer_ = std::make_shared<mavsdk::geometry::CoordinateTransformation>(
+      global_coordinate);
+
+  // 姿态变换
+  double yaw_rad = Deg2Rad(initlal_orientation_.yaw_deg);
+  double pitch_rad = Deg2Rad(initlal_orientation_.pitch_deg);
+  double roll_rad = Deg2Rad(initlal_orientation_.roll_deg);
+  q_Wned_Wfrd_ = Eigen::Quaterniond(
+      Eigen::AngleAxisd(roll_rad, Eigen::Vector3d::UnitX()) *
+      Eigen::AngleAxisd(pitch_rad, Eigen::Vector3d::UnitY()) *
+      Eigen::AngleAxisd(yaw_rad, Eigen::Vector3d::UnitZ()));
+  Eigen::Quaterniond q_Wfrd_Wflu(
+      Eigen::AngleAxisd(-M_PI, Eigen::Vector3d::UnitX()));
+  q_Wned_Wflu_ = q_Wned_Wfrd_ * q_Wfrd_Wflu;
 
   std::cout << AUTOPILOT_MESSAGE_HEAD << "Initialization completed."
             << std::endl;
@@ -184,10 +273,10 @@ bool Autopilot::Takeoff(const float altitude) {
 
   std::cout.precision(2);
   while (true) {
-    position_lock_.lock();
-    auto cur_altitude = this->position_ned_.relative_altitude_m;
-    position_lock_.unlock();
-    if (cur_altitude > altitude - 1) {
+    data_lock_.lock();
+    auto cur_altitude = -this->position_velocity_ned_.position.down_m;
+    data_lock_.unlock();
+    if (cur_altitude > altitude - 0.2) {
       break;
     }
     std::cout << '\r' << AUTOPILOT_PROCESS_HEAD
@@ -219,7 +308,9 @@ bool Autopilot::Land() {
   // 等待降落完成
   std::cout.precision(2);
   while (telemetry_->in_air()) {
-    auto cur_altitude = this->position_ned_.relative_altitude_m;
+    data_lock_.lock();
+    auto cur_altitude = this->odometry_.position_body.z_m;
+    data_lock_.unlock();
     if (cur_altitude < 0.2) {
       break;
     }
@@ -235,7 +326,38 @@ bool Autopilot::Land() {
   return true;
 }
 
-/// @brief 开启外部控制模式
+/// @brief 位置控制 WFLU
+/// @param t_front 前
+/// @param t_left 左
+/// @param t_up 上
+/// @param t_yaw 偏航角 rad
+/// @return
+bool Autopilot::GotoPosition(float t_front, float t_left, float t_up,
+                             float t_yaw) {
+  Eigen::Vector3d position_Wflu(t_front, t_left, t_up);
+  Eigen::Vector3d position_Wned = q_Wned_Wflu_ * position_Wflu;
+
+  auto global_coordinates =
+      transformer_->global_from_local({position_Wned[0], position_Wned[1]});
+
+  {
+    auto error = action_->goto_location(
+        global_coordinates.latitude_deg, global_coordinates.longitude_deg,
+        initial_global_pos_.absolute_altitude_m - position_Wned[2],
+        NormolizeAngelDeg(initlal_orientation_.yaw_deg + Rad2Deg(t_yaw)));
+    if (error != mavsdk::Action::Result::Success) {
+      std::cout << AUTOPILOT_ERROR_HEAD
+                << "Failed to call goto_location: " << static_cast<int>(error)
+                << std::endl;
+      return false;
+    }
+  }
+
+  // TODO wait ?
+  return true;
+}
+
+/// @brief 开启外部速度控制模式
 /// @return
 bool Autopilot::StartOffboardVelocity() {
   // 发送第一次 setpoint
@@ -280,16 +402,16 @@ bool Autopilot::StartOffboardVelocity() {
   return true;
 }
 
-/// @brief 结束外部控制模式
+/// @brief 结束速度外部控制模式
 /// @return
-bool Autopilot::FinishOffboardVelocity() {
+bool Autopilot::ExitOffboardVelocity() {
   offboard_velocity_promise_.set_value();
   offboard_velocity_thread_.join();
   std::cout << AUTOPILOT_MESSAGE_HEAD << "Finished offboard mode." << std::endl;
   return true;
 }
 
-/// @brief 设置外部控制模式 FRD
+/// @brief 设置外部控制速度 FRD
 /// @param v_down 下降速度
 /// @param w_yaw 偏航速度
 /// @param v_forward 前向速度
@@ -304,4 +426,170 @@ bool Autopilot::SetPointOffboardVelocity(float v_down, float w_yaw,
   velocity_setpoint_.yawspeed_deg_s;
 
   return true;
+}
+
+// /// @brief 开启位置外部控制模式
+// /// @return
+// bool Autopilot::StartOffboardPosition() {
+//   // 设置 setpoint 为无人机当前位置
+//   {
+//     std::unique_lock<std::mutex> lock_2(data_lock_);
+//     Eigen::Vector3f current_position_body(odometry_.position_body.x_m,
+//                                           odometry_.position_body.y_m,
+//                                           odometry_.position_body.z_m);
+//     Eigen::Quaternionf current_orientation_body(odometry_.q.w, odometry_.q.x,
+//                                                 odometry_.q.y,
+//                                                 odometry_.q.z);
+//     Eigen::Isometry3f current_pose_body(current_orientation_body);
+//     current_pose_body.pretranslate(current_position_body);
+
+//     Eigen::Isometry3f current_pose_ned = T_ned_body_origin *
+//     current_pose_body; Eigen::Vector3f current_position_ned =
+//     current_pose_ned.translation(); Eigen::Quaternionf
+//     current_orientation_ned(current_pose_ned.rotation());
+
+//     position_setpoint_.north_m = current_position_ned[0];
+//     position_setpoint_.east_m = current_position_ned[1];
+//     position_setpoint_.down_m = current_position_ned[2];
+//     position_setpoint_.yaw_deg =
+//         Rad2Deg(current_orientation_ned.matrix().eulerAngles(2, 1, 0)[0]);
+//   }
+
+//   // 发送第一次 setpoint
+//   {
+//     std::unique_lock<std::mutex> lock(position_setpoint_lock_);
+//     auto error = offboard_->set_position_ned(position_setpoint_);
+
+//     std::cout << position_setpoint_.north_m << " " <<
+//     position_setpoint_.east_m
+//               << " " << position_setpoint_.down_m << " "
+//               << position_setpoint_.yaw_deg << std::endl;
+
+//     if (error != mavsdk::Offboard::Result::Success) {
+//       std::cout << AUTOPILOT_ERROR_HEAD
+//                 << "Failed to send initial position setpoint_: "
+//                 << static_cast<int>(error) << std::endl;
+//       return false;
+//     }
+//   }
+
+//   // 切换到 offboard mode
+//   {
+//     auto error = offboard_->start();
+//     if (error != mavsdk::Offboard::Result::Success) {
+//       std::cout << AUTOPILOT_ERROR_HEAD
+//                 << "Failed to start offboard mode: " <<
+//                 static_cast<int>(error)
+//                 << std::endl;
+//     }
+//     return false;
+//   }
+
+//   offboard_position_promise_ = std::promise<void>();
+//   offboard_position_future_ = offboard_position_promise_.get_future();
+
+//   std::cout << AUTOPILOT_MESSAGE_HEAD << "Started offboard mode." <<
+//   std::endl; auto offboard_function = [this]() {
+//     while (offboard_position_future_.wait_for(0.02s) ==
+//            std::future_status::timeout) {
+//       std::unique_lock<std::mutex> lock(position_setpoint_lock_);
+
+//       auto error = offboard_->set_position_ned(position_setpoint_);
+//       if (error != mavsdk::Offboard::Result::Success) {
+//         std::cout << AUTOPILOT_MESSAGE_HEAD
+//                   << "Failed to send position setpoint: "
+//                   << static_cast<int>(error) << std::endl;
+//       }
+
+//       std::cout << position_setpoint_.north_m << " "
+//                 << position_setpoint_.east_m << " " <<
+//                 position_setpoint_.down_m
+//                 << " " << position_setpoint_.yaw_deg << std::endl;
+//     }
+//   };
+
+//   offboard_position_thread_ = std::thread(offboard_function);
+//   return true;
+// }
+
+// /// @brief 退出位置外部控制模式
+// /// @return
+// bool Autopilot::ExitOffboardPosition() {
+//   offboard_position_promise_.set_value();
+//   offboard_position_thread_.join();
+//   std::cout << AUTOPILOT_MESSAGE_HEAD << "Finished offboard mode." <<
+//   std::endl; return true;
+// }
+
+// /// @brief 设置外部控制位置 FRD
+// /// @param t_x x
+// /// @param t_y y
+// /// @param t_z z
+// /// @param t_yaw 偏航角 rad
+// /// @return
+// bool Autopilot::SetPointOffboardPosition(float t_x, float t_y, float t_z,
+//                                          float t_yaw) {
+//   std::unique_lock<std::mutex> lock(position_setpoint_lock_);
+//   Eigen::Vector3f target_position_body(t_x, t_y, t_z);
+//   Eigen::AngleAxisf target_orientation_body(t_yaw, Eigen::Vector3f::UnitZ());
+//   Eigen::Isometry3f target_pose_body(target_orientation_body);
+//   target_pose_body.pretranslate(target_position_body);
+
+//   Eigen::Isometry3f target_pose_ned = T_ned_body_origin * target_pose_body;
+//   Eigen::Vector3f target_position_ned = target_pose_ned.translation();
+//   Eigen::Quaternionf target_orientation_ned(target_pose_ned.rotation());
+
+//   position_setpoint_.north_m = target_position_ned[0];
+//   position_setpoint_.east_m = target_position_ned[1];
+//   position_setpoint_.down_m = target_position_ned[2];
+//   position_setpoint_.yaw_deg =
+//       Rad2Deg(target_orientation_ned.matrix().eulerAngles(2, 1, 0)[0]);
+
+//   return true;
+// }
+
+/// @brief 位置控制测试
+void Autopilot::CoordinateTest() {
+  data_lock_.lock();
+
+  mavsdk::geometry::CoordinateTransformation::LocalCoordinate local_coordinate;
+  local_coordinate.east_m = position_velocity_ned_.position.east_m;
+  local_coordinate.north_m = position_velocity_ned_.position.north_m;
+
+  mavsdk::geometry::CoordinateTransformation::GlobalCoordinate
+      global_coordinate = transformer_->global_from_local(local_coordinate);
+
+  auto global_test = transformer_->global_from_local({0, 0});
+
+  auto local_test = transformer_->local_from_global(
+      {global_test.latitude_deg, global_test.longitude_deg});
+
+  std::cout << "Body position: x " << odometry_.position_body.x_m << " y "
+            << odometry_.position_body.y_m << " z "
+            << odometry_.position_body.z_m << std::endl;
+
+  std::cout << "Ned position: north " << position_velocity_ned_.position.north_m
+            << " east " << position_velocity_ned_.position.east_m << " down "
+            << position_velocity_ned_.position.down_m << std::endl;
+
+  std::cout << "Global position: longitude " << global_coordinate.longitude_deg
+            << " latitude " << global_coordinate.latitude_deg << std::endl;
+
+  std::cout << "Global position test: longitude " << global_test.longitude_deg
+            << " latitude " << global_test.latitude_deg << std::endl;
+
+  std::cout << "Ned position test: x " << local_test.north_m << " y "
+            << local_test.east_m << std::endl;
+
+  std::cout << "Initial yaw angle: " << initlal_orientation_.yaw_deg
+            << std::endl;
+
+  data_lock_.unlock();
+  auto global_test_2 = transformer_->global_from_local({5, 0});
+
+  action_->goto_location(global_test_2.latitude_deg,
+                         global_test_2.longitude_deg,
+                         initial_global_pos_.absolute_altitude_m + 3, 90);
+
+  // std::cout << T_ned_body_origin.matrix() << std::endl;
 }

@@ -12,21 +12,37 @@ int main(int argc, char** argv) {
 
   AutopilotROS1 autopilot(nh, port);
 
-  // autopilot.Test();
+  // char key{'0'};
+  // while (key != 'q') {
+  //   autopilot.CoordinateTest();
+  //   std::cin >> key;
+  // }
 
   if (!autopilot.Arm()) exit(1);
-  if (!autopilot.Takeoff(5)) exit(1);
-
-  autopilot.StartOffboardVelocity();
+  if (!autopilot.Takeoff(4)) exit(1);
 
   std::cin.get();
-  autopilot.SetPointOffboardVelocity(0, 0, 2, 0);
-  std::cin.get();
-  autopilot.SetPointOffboardVelocity();
-  std::cin.get();
+  autopilot.GotoPosition(5, 0, 4, 0);
 
-  autopilot.FinishOffboardVelocity();
+  std::cin.get();
+  autopilot.GotoPosition(0, 5, 4, 0);
 
+  std::cin.get();
+  autopilot.GotoPosition(0, 0, 4, 1.57);
+
+  std::cin.get();
+  autopilot.GotoPosition(0, 0, 4, 0);
+  // autopilot.StartOffboardPosition();
+
+  // std::cin.get();
+  // autopilot.SetPointOffboardPosition(3, 0, 3, 0);
+  // std::cin.get();
+  // autopilot.SetPointOffboardPosition(0, 0, 3, 0);
+  // std::cin.get();
+
+  // autopilot.ExitOffboardPosition();
+
+  std::cin.get();
   autopilot.Land();
 
   return 0;

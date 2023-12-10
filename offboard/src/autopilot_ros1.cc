@@ -9,20 +9,21 @@
 AutopilotROS1::AutopilotROS1(ros::NodeHandle nh, const std::string port)
     : nh_(nh), Autopilot(port) {
   odometry_pub_ = nh_.advertise<nav_msgs::Odometry>("autopilot/odom", 10);
-  camera_pose_pub_ = nh_.advertise<geometry_msgs::PoseStamped>("autopilot/camera_pose", 10);
+  camera_pose_pub_ =
+      nh_.advertise<geometry_msgs::PoseStamped>("autopilot/camera_pose", 10);
 
   // 重新注册数传回调
   telemetry_->subscribe_odometry([this](mavsdk::Telemetry::Odometry odometry) {
-    odometry_lock_.lock();
+    data_lock_.lock();
     this->odometry_ = odometry;
-    odometry_lock_.unlock();
+    data_lock_.unlock();
 
     OdometryPub();
   });
 }
 
 void AutopilotROS1::OdometryPub() {
-  odometry_lock_.lock();
+  data_lock_.lock();
   Eigen::Vector3f position_frd{odometry_.position_body.x_m,
                                odometry_.position_body.y_m,
                                odometry_.position_body.z_m};
@@ -35,8 +36,9 @@ void AutopilotROS1::OdometryPub() {
       odometry_.angular_velocity_body.roll_rad_s,
       odometry_.angular_velocity_body.pitch_rad_s,
       odometry_.angular_velocity_body.yaw_rad_s};
-  odometry_lock_.unlock();
+  data_lock_.unlock();
 
+  // 发布里程计消息
   nav_msgs::Odometry odom_msg;
   // ROS 消息中统一使用 ROS 时间
   odom_msg.header.stamp = ros::Time::now();
@@ -48,10 +50,11 @@ void AutopilotROS1::OdometryPub() {
   Eigen::Isometry3f T_Wfrd_Bfrd(orientation_frd);
   T_Wfrd_Bfrd.pretranslate(position_frd);
 
-  Eigen::Isometry3f T_Wflu_Wfrd(Eigen::AngleAxisf(M_PI, Eigen::Vector3f::UnitX()));
-  Eigen::Isometry3f T_Bfrd_Bflu(Eigen::AngleAxisf(-M_PI, Eigen::Vector3f::UnitX()));
+  Eigen::Isometry3f T_Wflu_Wfrd(
+      Eigen::AngleAxisf(M_PI, Eigen::Vector3f::UnitX()));
+  Eigen::Isometry3f T_Bfrd_Bflu(
+      Eigen::AngleAxisf(-M_PI, Eigen::Vector3f::UnitX()));
   Eigen::Isometry3f T_Wflu_Bflu = T_Wflu_Wfrd * T_Wfrd_Bfrd * T_Bfrd_Bflu;
-
 
   Eigen::Vector3f position_flu = T_Wflu_Bflu.translation();
   Eigen::Quaternionf orientation_flu(T_Wflu_Bflu.rotation());
@@ -77,7 +80,7 @@ void AutopilotROS1::OdometryPub() {
 
   odometry_pub_.publish(odom_msg);
 
-
+  // 发布相机位姿
   Eigen::Isometry3f Tbc(Eigen::Quaternionf(-0.5, 0.5, -0.5, 0.5));
   Tbc.pretranslate(Eigen::Vector3f(0.1, 0, 0));
 
@@ -101,5 +104,3 @@ void AutopilotROS1::OdometryPub() {
 
   camera_pose_pub_.publish(camera_pose);
 }
-
-
