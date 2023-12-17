@@ -1,0 +1,5 @@
+<launch>
+  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find orbslam)/config/orbslam.rviz" />
+  <node pkg="orbslam" type="orbslam_uav" name="orbslam_uav" />
+  
+</launch>

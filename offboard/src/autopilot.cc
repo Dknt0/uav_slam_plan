@@ -111,7 +111,7 @@ Autopilot::Autopilot(const std::string port) : port_(port) {
   }
 
   // 初始化插件
-  while (mavsdk_->systems().size() == 0) {
+  while (mavsdk_->systems().size() == 0 && !ShouldQuit()) {
     std::this_thread::sleep_for(0.5s);
   }
   system_ = mavsdk_->systems()[0];
@@ -230,7 +230,7 @@ Autopilot::Autopilot(const std::string port) : port_(port) {
 /// @return
 bool Autopilot::Arm() {
   std::cout << AUTOPILOT_MESSAGE_HEAD << "Waiting for RTF..." << std::endl;
-  while (telemetry_->health_all_ok()) {
+  while (telemetry_->health_all_ok() && !ShouldQuit()) {
     std::this_thread::sleep_for(0.5s);
   }
 
@@ -272,11 +272,11 @@ bool Autopilot::Takeoff(const float altitude) {
   }
 
   std::cout.precision(2);
-  while (true) {
+  while (!ShouldQuit()) {
     data_lock_.lock();
     auto cur_altitude = -this->position_velocity_ned_.position.down_m;
     data_lock_.unlock();
-    if (cur_altitude > altitude - 0.2) {
+    if (cur_altitude > altitude - 0.25) {
       break;
     }
     std::cout << '\r' << AUTOPILOT_PROCESS_HEAD
@@ -307,7 +307,7 @@ bool Autopilot::Land() {
 
   // 等待降落完成
   std::cout.precision(2);
-  while (telemetry_->in_air()) {
+  while (telemetry_->in_air() && !ShouldQuit()) {
     data_lock_.lock();
     auto cur_altitude = this->odometry_.position_body.z_m;
     data_lock_.unlock();
@@ -326,6 +326,23 @@ bool Autopilot::Land() {
   return true;
 }
 
+/// @brief 设置速度
+/// @param vel 
+/// @return 
+bool Autopilot::SetVelocity(const float vel) {
+  {
+    auto error = action_->set_maximum_speed(vel);
+    if (error != mavsdk::Action::Result::Success) {
+      std::cout << AUTOPILOT_ERROR_HEAD
+                << "Failed to set velocity: " << static_cast<int>(error)
+                << std::endl;
+      return false;
+    }
+  }
+  std::cout << AUTOPILOT_MESSAGE_HEAD << "Set velocity " << vel << " m/s." << std::endl;
+  return true;
+}
+
 /// @brief 位置控制 WFLU
 /// @param t_front 前
 /// @param t_left 左
@@ -339,6 +356,8 @@ bool Autopilot::GotoPosition(float t_front, float t_left, float t_up,
 
   auto global_coordinates =
       transformer_->global_from_local({position_Wned[0], position_Wned[1]});
+
+  // TODO 朝向目标点
 
   {
     auto error = action_->goto_location(
@@ -354,6 +373,15 @@ bool Autopilot::GotoPosition(float t_front, float t_left, float t_up,
   }
 
   // TODO wait ?
+  return true;
+}
+
+/// @brief 强制关闭飞控
+/// @return
+bool Autopilot::Shutdown() {
+  std::unique_lock<std::mutex> lock(quit_flag_lock_);
+  quit_flag_ = true;
+  std::cout << AUTOPILOT_ERROR_HEAD << "Forced shutdown." << std::endl;
   return true;
 }
 
@@ -387,7 +415,8 @@ bool Autopilot::StartOffboardVelocity() {
   std::cout << AUTOPILOT_MESSAGE_HEAD << "Started offboard mode." << std::endl;
   auto offboard_function = [this]() {
     while (offboard_velocity_future_.wait_for(0.02s) ==
-           std::future_status::timeout) {
+               std::future_status::timeout &&
+           !ShouldQuit()) {
       std::unique_lock<std::mutex> lock(velocity_setpoint_lock_);
       auto error = offboard_->set_velocity_body(velocity_setpoint_);
       if (error != mavsdk::Offboard::Result::Success) {
@@ -491,7 +520,7 @@ bool Autopilot::SetPointOffboardVelocity(float v_down, float w_yaw,
 //   std::cout << AUTOPILOT_MESSAGE_HEAD << "Started offboard mode." <<
 //   std::endl; auto offboard_function = [this]() {
 //     while (offboard_position_future_.wait_for(0.02s) ==
-//            std::future_status::timeout) {
+//            std::future_status::timeout && !ShouldQuit()) {
 //       std::unique_lock<std::mutex> lock(position_setpoint_lock_);
 
 //       auto error = offboard_->set_position_ned(position_setpoint_);

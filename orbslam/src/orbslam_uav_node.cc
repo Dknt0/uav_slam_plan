@@ -5,9 +5,14 @@
  */
 
 #include <cv_bridge/cv_bridge.h>
+#include <geometry_msgs/TransformStamped.h>
 #include <ros/ros.h>
 #include <sensor_msgs/Image.h>
+#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
+#include <tf2_ros/transform_broadcaster.h>
 
+#include <Eigen/Core>
+#include <Eigen/Geometry>
 #include <chrono>
 #include <future>
 #include <mutex>
@@ -21,6 +26,8 @@ std::queue<sensor_msgs::ImageConstPtr> color_queue;
 std::mutex color_img_lock;
 std::queue<sensor_msgs::ImageConstPtr> depth_queue;
 std::mutex depth_img_lock;
+
+tf2_ros::TransformBroadcaster* tf_broadcaster;
 
 bool ColorImgCallback(const sensor_msgs::Image::ConstPtr& msg) {
   std::unique_lock<std::mutex> lock(color_img_lock);
@@ -38,7 +45,8 @@ bool DepthImgCallback(const sensor_msgs::Image::ConstPtr& msg) {
 
 // 同步线程
 void SyncThread(ORB_SLAM2::System* orbslam, std::future<void>* exit_future) {
-  while (exit_future->wait_for(std::chrono::milliseconds(1)) == std::future_status::timeout) {
+  while (exit_future->wait_for(std::chrono::milliseconds(1)) ==
+         std::future_status::timeout) {
     std::unique_lock<std::mutex> lock_1(color_img_lock);
     std::unique_lock<std::mutex> lock_2(depth_img_lock);
 
@@ -70,7 +78,47 @@ void SyncThread(ORB_SLAM2::System* orbslam, std::future<void>* exit_future) {
       color_queue.pop();
       depth_queue.pop();
 
-      auto res = orbslam->TrackRGBD(color_img, depth_img, time);
+      
+      cv::Mat res = orbslam->TrackRGBD(color_img, depth_img, time);
+
+      // 判断是否失效
+      if (res.data == nullptr) {
+        continue;
+      }
+
+      Eigen::Matrix3d R;
+      Eigen::Vector3d t;
+      R << res.at<float>(0, 0), res.at<float>(0, 1), res.at<float>(0, 2),
+          res.at<float>(1, 0), res.at<float>(1, 1), res.at<float>(1, 2),
+          res.at<float>(2, 0), res.at<float>(2, 1), res.at<float>(2, 2);
+      t << res.at<float>(0, 3), res.at<float>(1, 3), res.at<float>(2, 3);
+      Eigen::Isometry3d T_cw(R);
+      T_cw.pretranslate(t);
+
+      Eigen::Isometry3d T_wc = T_cw.inverse();
+
+      Eigen::Isometry3d T_bc(
+          Eigen::AngleAxisd(-M_PI_2, Eigen::Vector3d::UnitX()) *
+          Eigen::AngleAxisd(M_PI_2, Eigen::Vector3d::UnitY()));
+      T_wc = T_bc * T_wc;
+
+      Eigen::Quaterniond q(T_wc.rotation());
+      t = T_wc.translation();
+
+      // 发布位姿消息
+      geometry_msgs::TransformStamped camera_pose;
+      camera_pose.header.frame_id = "world";
+      camera_pose.header.stamp = ros::Time::now();
+      camera_pose.child_frame_id = "camera_link";
+      camera_pose.transform.translation.x = t[0];
+      camera_pose.transform.translation.y = t[1];
+      camera_pose.transform.translation.z = t[2];
+      camera_pose.transform.rotation.w = q.w();
+      camera_pose.transform.rotation.x = q.x();
+      camera_pose.transform.rotation.y = q.y();
+      camera_pose.transform.rotation.z = q.z();
+      tf_broadcaster->sendTransform(camera_pose);
+
       // std::cout << res << std::endl;
     }
   }
@@ -92,6 +140,7 @@ int main(int argc, char** argv) {
 
   ORB_SLAM2::System orbslam(path_to_vocabulary, path_to_settings,
                             ORB_SLAM2::System::RGBD, true);
+  tf_broadcaster = new tf2_ros::TransformBroadcaster;
 
   std::promise<void> exit_promise;
   std::future<void> exit_future = exit_promise.get_future();
@@ -103,6 +152,8 @@ int main(int argc, char** argv) {
   exit_promise.set_value();
 
   orbslam.Shutdown();
+
+  delete tf_broadcaster;
 
   return 0;
 }

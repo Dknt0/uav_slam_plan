@@ -7,12 +7,12 @@
 #ifndef OFFBOARD_AUTOPILOT_H
 #define OFFBOARD_AUTOPILOT_H
 
+#include <mavsdk/geometry.h>
 #include <mavsdk/log_callback.h>
 #include <mavsdk/mavsdk.h>
 #include <mavsdk/plugins/action/action.h>
 #include <mavsdk/plugins/offboard/offboard.h>
 #include <mavsdk/plugins/telemetry/telemetry.h>
-#include <mavsdk/geometry.h>
 
 #include <Eigen/Core>
 #include <Eigen/Geometry>
@@ -30,7 +30,10 @@ class Autopilot {
   bool Arm();
   bool Takeoff(const float altitude);
   bool Land();
+  bool SetVelocity(const float vel);
   bool GotoPosition(float t_front, float t_left, float t_up, float t_yaw);
+
+  bool Shutdown();
 
   // 位置外部控制不可用
   bool StartOffboardPosition();
@@ -47,6 +50,14 @@ class Autopilot {
   void CoordinateTest();
 
  protected:
+  inline bool ShouldQuit() {
+    std::unique_lock<std::mutex> lock(quit_flag_lock_);
+    return quit_flag_;
+  }
+
+  bool quit_flag_ = false;
+  std::mutex quit_flag_lock_;
+
   // MAVSDK 工具
   std::string port_;
   std::shared_ptr<mavsdk::Mavsdk> mavsdk_;
@@ -55,7 +66,7 @@ class Autopilot {
   std::shared_ptr<mavsdk::Action> action_;
   std::shared_ptr<mavsdk::Offboard> offboard_;
   std::shared_ptr<mavsdk::geometry::CoordinateTransformation> transformer_;
-  
+
   // 初始状态
   // Eigen::Isometry3f T_ned_body_origin;
   mavsdk::Telemetry::Position initial_global_pos_;

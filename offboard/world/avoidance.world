@@ -941,6 +941,7 @@
       <static>1</static>
     </model>
     <model name='unit_cylinder'>
+      <static>1</static>
       <pose>-4.99275 3.39392 0.5 0 -0 0</pose>
       <link name='link'>
         <inertial>
@@ -955,27 +956,7 @@
           </inertia>
           <pose>0 0 0 0 -0 0</pose>
         </inertial>
-        <collision name='collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.5</radius>
-              <length>0.999998</length>
-            </cylinder>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
+        
         <visual name='visual'>
           <geometry>
             <cylinder>
@@ -996,6 +977,8 @@
       </link>
     </model>
     <model name='unit_cylinder_clone'>
+      <static>1</static>
+      <static>1</static>
       <pose>-7.19076 6.86652 1.85113 0 -0 0.001264</pose>
       <link name='link'>
         <inertial>
@@ -1010,27 +993,7 @@
           </inertia>
           <pose>0 0 0 0 -0 0</pose>
         </inertial>
-        <collision name='collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.525129</radius>
-              <length>3.70228</length>
-            </cylinder>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
+        
         <visual name='visual'>
           <geometry>
             <cylinder>
@@ -1051,6 +1014,7 @@
       </link>
     </model>
     <model name='unit_cylinder_clone_0'>
+      <static>1</static>
       <pose>-1.8346 6.35455 1.85113 0 -0 0.001264</pose>
       <link name='link'>
         <inertial>
@@ -1065,27 +1029,7 @@
           </inertia>
           <pose>0 0 0 0 -0 0</pose>
         </inertial>
-        <collision name='collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.525129</radius>
-              <length>3.70228</length>
-            </cylinder>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
+        
         <visual name='visual'>
           <geometry>
             <cylinder>
@@ -1106,6 +1050,7 @@
       </link>
     </model>
     <model name='unit_cylinder_clone_1'>
+      <static>1</static>
       <pose>-10.9875 2.73047 1.85113 0 -0 0.001264</pose>
       <link name='link'>
         <inertial>
@@ -1120,27 +1065,7 @@
           </inertia>
           <pose>0 0 0 0 -0 0</pose>
         </inertial>
-        <collision name='collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.525129</radius>
-              <length>3.70228</length>
-            </cylinder>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
+        
         <visual name='visual'>
           <geometry>
             <cylinder>
@@ -1161,6 +1086,7 @@
       </link>
     </model>
     <model name='unit_cylinder_clone_2'>
+      <static>1</static>
       <pose>-10.8182 11.8688 1.85113 0 -0 0.001264</pose>
       <link name='link'>
         <inertial>
@@ -1175,27 +1101,7 @@
           </inertia>
           <pose>0 0 0 0 -0 0</pose>
         </inertial>
-        <collision name='collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.525129</radius>
-              <length>3.70228</length>
-            </cylinder>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
+        
         <visual name='visual'>
           <geometry>
             <cylinder>
@@ -1216,6 +1122,7 @@
       </link>
     </model>
     <model name='unit_cylinder_clone_3'>
+      <static>1</static>
       <pose>-5.22178 13.9601 1.85113 0 -0 0.001264</pose>
       <link name='link'>
         <inertial>
@@ -1230,27 +1137,7 @@
           </inertia>
           <pose>0 0 0 0 -0 0</pose>
         </inertial>
-        <collision name='collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.525129</radius>
-              <length>3.70228</length>
-            </cylinder>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
+        
         <visual name='visual'>
           <geometry>
             <cylinder>
@@ -1271,6 +1158,7 @@
       </link>
     </model>
     <model name='unit_cylinder_clone_4'>
+      <static>1</static>
       <pose>3.07816 9.47574 1.85113 0 -0 0.001264</pose>
       <link name='link'>
         <inertial>
@@ -1285,27 +1173,7 @@
           </inertia>
           <pose>0 0 0 0 -0 0</pose>
         </inertial>
-        <collision name='collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.525129</radius>
-              <length>3.70228</length>
-            </cylinder>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
+        
         <visual name='visual'>
           <geometry>
             <cylinder>
@@ -1326,6 +1194,7 @@
       </link>
     </model>
     <model name='unit_cylinder_clone_5'>
+      <static>1</static>
       <pose>2.93636 2.53057 1.85113 0 -0 0.001264</pose>
       <link name='link'>
         <inertial>
@@ -1340,27 +1209,7 @@
           </inertia>
           <pose>0 0 0 0 -0 0</pose>
         </inertial>
-        <collision name='collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.525129</radius>
-              <length>3.70228</length>
-            </cylinder>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
+        
         <visual name='visual'>
           <geometry>
             <cylinder>
@@ -1381,6 +1230,7 @@
       </link>
     </model>
     <model name='unit_cylinder_clone_6'>
+      <static>1</static>
       <pose>3.13963 15.9926 1.85113 0 -0 0.001264</pose>
       <link name='link'>
         <inertial>
@@ -1395,27 +1245,7 @@
           </inertia>
           <pose>0 0 0 0 -0 0</pose>
         </inertial>
-        <collision name='collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.525129</radius>
-              <length>3.70228</length>
-            </cylinder>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
+        
         <visual name='visual'>
           <geometry>
             <cylinder>
@@ -1436,6 +1266,7 @@
       </link>
     </model>
     <model name='unit_cylinder_clone_7'>
+      <static>1</static>
       <pose>7.91287 12.4801 1.85113 0 -0 0.001264</pose>
       <link name='link'>
         <inertial>
@@ -1450,27 +1281,7 @@
           </inertia>
           <pose>0 0 0 0 -0 0</pose>
         </inertial>
-        <collision name='collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.525129</radius>
-              <length>3.70228</length>
-            </cylinder>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
+        
         <visual name='visual'>
           <geometry>
             <cylinder>
@@ -1491,6 +1302,7 @@
       </link>
     </model>
     <model name='unit_cylinder_clone_8'>
+      <static>1</static>
       <pose>8.99241 7.12322 1.85113 0 -0 0.001264</pose>
       <link name='link'>
         <inertial>
@@ -1505,27 +1317,7 @@
           </inertia>
           <pose>0 0 0 0 -0 0</pose>
         </inertial>
-        <collision name='collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.525129</radius>
-              <length>3.70228</length>
-            </cylinder>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
+        
         <visual name='visual'>
           <geometry>
             <cylinder>
@@ -1546,6 +1338,7 @@
       </link>
     </model>
     <model name='unit_cylinder_clone_9'>
+      <static>1</static>
       <pose>12.0258 16.6922 1.85113 0 -0 0.001264</pose>
       <link name='link'>
         <inertial>
@@ -1560,27 +1353,7 @@
           </inertia>
           <pose>0 0 0 0 -0 0</pose>
         </inertial>
-        <collision name='collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.525129</radius>
-              <length>3.70228</length>
-            </cylinder>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
+        
         <visual name='visual'>
           <geometry>
             <cylinder>
@@ -1601,6 +1374,7 @@
       </link>
     </model>
     <model name='unit_cylinder_clone_10'>
+      <static>1</static>
       <pose>13.511 11.7308 1.85113 0 -0 0.001264</pose>
       <link name='link'>
         <inertial>
@@ -1615,27 +1389,7 @@
           </inertia>
           <pose>0 0 0 0 -0 0</pose>
         </inertial>
-        <collision name='collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.525129</radius>
-              <length>3.70228</length>
-            </cylinder>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
+        
         <visual name='visual'>
           <geometry>
             <cylinder>
@@ -1656,6 +1410,7 @@
       </link>
     </model>
     <model name='unit_cylinder_clone_11'>
+      <static>1</static>
       <pose>6.19465 19.4017 1.85113 0 -0 0.001264</pose>
       <link name='link'>
         <inertial>
@@ -1670,27 +1425,7 @@
           </inertia>
           <pose>0 0 0 0 -0 0</pose>
         </inertial>
-        <collision name='collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.525129</radius>
-              <length>3.70228</length>
-            </cylinder>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
+        
         <visual name='visual'>
           <geometry>
             <cylinder>
@@ -1711,6 +1446,7 @@
       </link>
     </model>
     <model name='unit_cylinder_clone_12'>
+      <static>1</static>
       <pose>-3.11666 19.712 1.85113 0 -0 0.001264</pose>
       <link name='link'>
         <inertial>
@@ -1725,27 +1461,7 @@
           </inertia>
           <pose>0 0 0 0 -0 0</pose>
         </inertial>
-        <collision name='collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.525129</radius>
-              <length>3.70228</length>
-            </cylinder>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
+        
         <visual name='visual'>
           <geometry>
             <cylinder>
@@ -1766,6 +1482,7 @@
       </link>
     </model>
     <model name='unit_cylinder_clone_13'>
+      <static>1</static>
       <pose>-11.9188 18.3435 1.85113 0 -0 0.001264</pose>
       <link name='link'>
         <inertial>
@@ -1780,27 +1497,7 @@
           </inertia>
           <pose>0 0 0 0 -0 0</pose>
         </inertial>
-        <collision name='collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.525129</radius>
-              <length>3.70228</length>
-            </cylinder>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
+        
         <visual name='visual'>
           <geometry>
             <cylinder>
@@ -1821,6 +1518,7 @@
       </link>
     </model>
     <model name='unit_cylinder_clone_14'>
+      <static>1</static>
       <pose>-17.6623 10.609 1.85113 0 -0 0.001264</pose>
       <link name='link'>
         <inertial>
@@ -1835,27 +1533,7 @@
           </inertia>
           <pose>0 0 0 0 -0 0</pose>
         </inertial>
-        <collision name='collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.525129</radius>
-              <length>3.70228</length>
-            </cylinder>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
+        
         <visual name='visual'>
           <geometry>
             <cylinder>
@@ -1876,6 +1554,7 @@
       </link>
     </model>
     <model name='unit_cylinder_clone_15'>
+      <static>1</static>
       <pose>-8.35884 -0.607006 1.85113 0 -0 0.001264</pose>
       <link name='link'>
         <inertial>
@@ -1890,27 +1569,7 @@
           </inertia>
           <pose>0 0 0 0 -0 0</pose>
         </inertial>
-        <collision name='collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.525129</radius>
-              <length>3.70228</length>
-            </cylinder>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
+        
         <visual name='visual'>
           <geometry>
             <cylinder>
@@ -1931,6 +1590,7 @@
       </link>
     </model>
     <model name='unit_cylinder_clone_16'>
+      <static>1</static>
       <pose>-13.8003 -0.173387 1.85113 0 -0 0.001264</pose>
       <link name='link'>
         <inertial>
@@ -1945,27 +1605,7 @@
           </inertia>
           <pose>0 0 0 0 -0 0</pose>
         </inertial>
-        <collision name='collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.525129</radius>
-              <length>3.70228</length>
-            </cylinder>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
+        
         <visual name='visual'>
           <geometry>
             <cylinder>
@@ -1986,6 +1626,7 @@
       </link>
     </model>
     <model name='unit_cylinder_clone_17'>
+      <static>1</static>
       <pose>-16.3505 4.00095 1.85113 0 -0 0.001264</pose>
       <link name='link'>
         <inertial>
@@ -2000,27 +1641,7 @@
           </inertia>
           <pose>0 0 0 0 -0 0</pose>
         </inertial>
-        <collision name='collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.525129</radius>
-              <length>3.70228</length>
-            </cylinder>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
+        
         <visual name='visual'>
           <geometry>
             <cylinder>
@@ -2041,6 +1662,7 @@
       </link>
     </model>
     <model name='unit_cylinder_clone_18'>
+      <static>1</static>
       <pose>-18.5773 -0.068358 1.85113 0 -0 0.001264</pose>
       <link name='link'>
         <inertial>
@@ -2055,27 +1677,7 @@
           </inertia>
           <pose>0 0 0 0 -0 0</pose>
         </inertial>
-        <collision name='collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.525129</radius>
-              <length>3.70228</length>
-            </cylinder>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
+        
         <visual name='visual'>
           <geometry>
             <cylinder>
@@ -2096,6 +1698,7 @@
       </link>
     </model>
     <model name='unit_cylinder_clone_19'>
+      <static>1</static>
       <pose>-15.7719 -4.2244 1.85113 0 -0 0.001264</pose>
       <link name='link'>
         <inertial>
@@ -2110,27 +1713,7 @@
           </inertia>
           <pose>0 0 0 0 -0 0</pose>
         </inertial>
-        <collision name='collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.525129</radius>
-              <length>3.70228</length>
-            </cylinder>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
+        
         <visual name='visual'>
           <geometry>
             <cylinder>
@@ -2151,6 +1734,7 @@
       </link>
     </model>
     <model name='unit_cylinder_clone_20'>
+      <static>1</static>
       <pose>-10.9243 -4.67115 1.85113 0 -0 0.001264</pose>
       <link name='link'>
         <inertial>
@@ -2165,27 +1749,7 @@
           </inertia>
           <pose>0 0 0 0 -0 0</pose>
         </inertial>
-        <collision name='collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.525129</radius>
-              <length>3.70228</length>
-            </cylinder>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
+        
         <visual name='visual'>
           <geometry>
             <cylinder>
@@ -2206,6 +1770,7 @@
       </link>
     </model>
     <model name='unit_cylinder_clone_21'>
+      <static>1</static>
       <pose>-4.56448 -3.31146 1.85113 0 -0 0.001264</pose>
       <link name='link'>
         <inertial>
@@ -2220,27 +1785,7 @@
           </inertia>
           <pose>0 0 0 0 -0 0</pose>
         </inertial>
-        <collision name='collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.525129</radius>
-              <length>3.70228</length>
-            </cylinder>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
+        
         <visual name='visual'>
           <geometry>
             <cylinder>
@@ -2261,6 +1806,7 @@
       </link>
     </model>
     <model name='unit_cylinder_clone_22'>
+      <static>1</static>
       <pose>-1.71773 0.024852 1.85113 0 -0 0.001264</pose>
       <link name='link'>
         <inertial>
@@ -2275,27 +1821,7 @@
           </inertia>
           <pose>0 0 0 0 -0 0</pose>
         </inertial>
-        <collision name='collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.525129</radius>
-              <length>3.70228</length>
-            </cylinder>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
+        
         <visual name='visual'>
           <geometry>
             <cylinder>
@@ -2316,6 +1842,7 @@
       </link>
     </model>
     <model name='unit_cylinder_clone_23'>
+      <static>1</static>
       <pose>7.67618 2.27355 1.85113 0 -0 0.001264</pose>
       <link name='link'>
         <inertial>
@@ -2330,27 +1857,7 @@
           </inertia>
           <pose>0 0 0 0 -0 0</pose>
         </inertial>
-        <collision name='collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.525129</radius>
-              <length>3.70228</length>
-            </cylinder>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
+        
         <visual name='visual'>
           <geometry>
             <cylinder>
@@ -2371,6 +1878,7 @@
       </link>
     </model>
     <model name='unit_cylinder_clone_24'>
+      <static>1</static>
       <pose>3.15122 -2.31341 1.85113 0 -0 0.001264</pose>
       <link name='link'>
         <inertial>
@@ -2385,27 +1893,7 @@
           </inertia>
           <pose>0 0 0 0 -0 0</pose>
         </inertial>
-        <collision name='collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.525129</radius>
-              <length>3.70228</length>
-            </cylinder>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
+        
         <visual name='visual'>
           <geometry>
             <cylinder>
@@ -2426,6 +1914,7 @@
       </link>
     </model>
     <model name='unit_cylinder_clone_25'>
+      <static>1</static>
       <pose>8.46732 -2.725 1.85113 0 -0 0.001264</pose>
       <link name='link'>
         <inertial>
@@ -2440,27 +1929,7 @@
           </inertia>
           <pose>0 0 0 0 -0 0</pose>
         </inertial>
-        <collision name='collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.525129</radius>
-              <length>3.70228</length>
-            </cylinder>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
+        
         <visual name='visual'>
           <geometry>
             <cylinder>
@@ -2481,6 +1950,7 @@
       </link>
     </model>
     <model name='unit_cylinder_clone_26'>
+      <static>1</static>
       <pose>13.0214 3.68776 1.85113 0 -0 0.001264</pose>
       <link name='link'>
         <inertial>
@@ -2495,27 +1965,7 @@
           </inertia>
           <pose>0 0 0 0 -0 0</pose>
         </inertial>
-        <collision name='collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.525129</radius>
-              <length>3.70228</length>
-            </cylinder>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
+        
         <visual name='visual'>
           <geometry>
             <cylinder>
@@ -2536,6 +1986,7 @@
       </link>
     </model>
     <model name='unit_cylinder_clone_27'>
+      <static>1</static>
       <pose>13.4519 -0.622612 1.85113 0 -0 0.001264</pose>
       <link name='link'>
         <inertial>
@@ -2550,27 +2001,7 @@
           </inertia>
           <pose>0 0 0 0 -0 0</pose>
         </inertial>
-        <collision name='collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.525129</radius>
-              <length>3.70228</length>
-            </cylinder>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
+        
         <visual name='visual'>
           <geometry>
             <cylinder>
@@ -2591,6 +2022,7 @@
       </link>
     </model>
     <model name='unit_cylinder_clone_28'>
+      <static>1</static>
       <pose>16.4201 7.38649 1.85113 0 -0 0.001264</pose>
       <link name='link'>
         <inertial>
@@ -2605,27 +2037,7 @@
           </inertia>
           <pose>0 0 0 0 -0 0</pose>
         </inertial>
-        <collision name='collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.525129</radius>
-              <length>3.70228</length>
-            </cylinder>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
+        
         <visual name='visual'>
           <geometry>
             <cylinder>
@@ -2646,6 +2058,7 @@
       </link>
     </model>
     <model name='unit_cylinder_clone_29'>
+      <static>1</static>
       <pose>-1.52866 12.0048 1.85113 0 -0 0.001264</pose>
       <link name='link'>
         <inertial>
@@ -2660,27 +2073,7 @@
           </inertia>
           <pose>0 0 0 0 -0 0</pose>
         </inertial>
-        <collision name='collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.525129</radius>
-              <length>3.70228</length>
-            </cylinder>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
+        
         <visual name='visual'>
           <geometry>
             <cylinder>
@@ -2701,6 +2094,7 @@
       </link>
     </model>
     <model name='unit_cylinder_clone_30'>
+      <static>1</static>
       <pose>5.02148 -6.0563 1.85113 0 -0 0.001264</pose>
       <link name='link'>
         <inertial>
@@ -2715,27 +2109,7 @@
           </inertia>
           <pose>0 0 0 0 -0 0</pose>
         </inertial>
-        <collision name='collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.525129</radius>
-              <length>3.70228</length>
-            </cylinder>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
+        
         <visual name='visual'>
           <geometry>
             <cylinder>
@@ -2756,6 +2130,7 @@
       </link>
     </model>
     <model name='unit_cylinder_clone_31'>
+      <static>1</static>
       <pose>3.55973 -7.66866 1.85113 0 -0 0.001264</pose>
       <link name='link'>
         <inertial>
@@ -2770,27 +2145,7 @@
           </inertia>
           <pose>0 0 0 0 -0 0</pose>
         </inertial>
-        <collision name='collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.525129</radius>
-              <length>3.70228</length>
-            </cylinder>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
+        
         <visual name='visual'>
           <geometry>
             <cylinder>
@@ -2811,6 +2166,7 @@
       </link>
     </model>
     <model name='unit_cylinder_clone_32'>
+      <static>1</static>
       <pose>5.70228 -9.60648 1.85113 0 -0 0.001264</pose>
       <link name='link'>
         <inertial>
@@ -2825,27 +2181,7 @@
           </inertia>
           <pose>0 0 0 0 -0 0</pose>
         </inertial>
-        <collision name='collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.525129</radius>
-              <length>3.70228</length>
-            </cylinder>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
+        
         <visual name='visual'>
           <geometry>
             <cylinder>
@@ -2866,6 +2202,7 @@
       </link>
     </model>
     <model name='unit_cylinder_clone_33'>
+      <static>1</static>
       <pose>1.62375 -10.3336 1.85113 0 -0 0.001264</pose>
       <link name='link'>
         <inertial>
@@ -2880,27 +2217,7 @@
           </inertia>
           <pose>0 0 0 0 -0 0</pose>
         </inertial>
-        <collision name='collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.525129</radius>
-              <length>3.70228</length>
-            </cylinder>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
+        
         <visual name='visual'>
           <geometry>
             <cylinder>
@@ -2921,6 +2238,7 @@
       </link>
     </model>
     <model name='unit_cylinder_clone_34'>
+      <static>1</static>
       <pose>1.22268 -6.06858 1.85113 0 -0 0.001264</pose>
       <link name='link'>
         <inertial>
@@ -2935,27 +2253,7 @@
           </inertia>
           <pose>0 0 0 0 -0 0</pose>
         </inertial>
-        <collision name='collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.525129</radius>
-              <length>3.70228</length>
-            </cylinder>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
+        
         <visual name='visual'>
           <geometry>
             <cylinder>
@@ -2976,6 +2274,7 @@
       </link>
     </model>
     <model name='unit_cylinder_clone_35'>
+      <static>1</static>
       <pose>-0.157467 -8.46058 1.85113 0 -0 0.001264</pose>
       <link name='link'>
         <inertial>
@@ -2990,27 +2289,7 @@
           </inertia>
           <pose>0 0 0 0 -0 0</pose>
         </inertial>
-        <collision name='collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.525129</radius>
-              <length>3.70228</length>
-            </cylinder>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
+        
         <visual name='visual'>
           <geometry>
             <cylinder>
@@ -3031,6 +2310,7 @@
       </link>
     </model>
     <model name='unit_cylinder_clone_36'>
+      <static>1</static>
       <pose>-1.68771 -6.77819 1.85113 0 -0 0.001264</pose>
       <link name='link'>
         <inertial>
@@ -3045,27 +2325,7 @@
           </inertia>
           <pose>0 0 0 0 -0 0</pose>
         </inertial>
-        <collision name='collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.525129</radius>
-              <length>3.70228</length>
-            </cylinder>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
+        
         <visual name='visual'>
           <geometry>
             <cylinder>
@@ -3086,6 +2346,7 @@
       </link>
     </model>
     <model name='unit_cylinder_clone_37'>
+      <static>1</static>
       <pose>-2.62275 -10.7298 1.85113 0 -0 0.001264</pose>
       <link name='link'>
         <inertial>
@@ -3100,27 +2361,7 @@
           </inertia>
           <pose>0 0 0 0 -0 0</pose>
         </inertial>
-        <collision name='collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.525129</radius>
-              <length>3.70228</length>
-            </cylinder>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
+        
         <visual name='visual'>
           <geometry>
             <cylinder>
@@ -3141,6 +2382,7 @@
       </link>
     </model>
     <model name='unit_cylinder_clone_38'>
+      <static>1</static>
       <pose>-4.00925 -8.27535 1.85113 0 -0 0.001264</pose>
       <link name='link'>
         <inertial>
@@ -3155,27 +2397,7 @@
           </inertia>
           <pose>0 0 0 0 -0 0</pose>
         </inertial>
-        <collision name='collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.525129</radius>
-              <length>3.70228</length>
-            </cylinder>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
+        
         <visual name='visual'>
           <geometry>
             <cylinder>
@@ -3196,6 +2418,7 @@
       </link>
     </model>
     <model name='unit_cylinder_clone_39'>
+      <static>1</static>
       <pose>-5.41795 -6.34609 1.85113 0 -0 0.001264</pose>
       <link name='link'>
         <inertial>
@@ -3210,27 +2433,7 @@
           </inertia>
           <pose>0 0 0 0 -0 0</pose>
         </inertial>
-        <collision name='collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.525129</radius>
-              <length>3.70228</length>
-            </cylinder>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
+        
         <visual name='visual'>
           <geometry>
             <cylinder>
@@ -3251,6 +2454,7 @@
       </link>
     </model>
     <model name='unit_cylinder_clone_40'>
+      <static>1</static>
       <pose>-5.65555 -10.9179 1.85113 0 -0 0.001264</pose>
       <link name='link'>
         <inertial>
@@ -3265,27 +2469,7 @@
           </inertia>
           <pose>0 0 0 0 -0 0</pose>
         </inertial>
-        <collision name='collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.525129</radius>
-              <length>3.70228</length>
-            </cylinder>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
+        
         <visual name='visual'>
           <geometry>
             <cylinder>
@@ -3306,6 +2490,7 @@
       </link>
     </model>
     <model name='unit_cylinder_clone_41'>
+      <static>1</static>
       <pose>-7.05445 -8.54393 1.85113 0 -0 0.001264</pose>
       <link name='link'>
         <inertial>
@@ -3320,27 +2505,7 @@
           </inertia>
           <pose>0 0 0 0 -0 0</pose>
         </inertial>
-        <collision name='collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.525129</radius>
-              <length>3.70228</length>
-            </cylinder>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
+        
         <visual name='visual'>
           <geometry>
             <cylinder>
@@ -3361,6 +2526,7 @@
       </link>
     </model>
     <model name='unit_cylinder_clone_42'>
+      <static>1</static>
       <pose>-8.90738 -6.93996 1.85113 0 -0 0.001264</pose>
       <link name='link'>
         <inertial>
@@ -3375,27 +2541,7 @@
           </inertia>
           <pose>0 0 0 0 -0 0</pose>
         </inertial>
-        <collision name='collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.525129</radius>
-              <length>3.70228</length>
-            </cylinder>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
+        
         <visual name='visual'>
           <geometry>
             <cylinder>
@@ -3416,6 +2562,7 @@
       </link>
     </model>
     <model name='unit_cylinder_clone_43'>
+      <static>1</static>
       <pose>-9.23946 -10.5967 1.85113 0 -0 0.001264</pose>
       <link name='link'>
         <inertial>
@@ -3430,27 +2577,7 @@
           </inertia>
           <pose>0 0 0 0 -0 0</pose>
         </inertial>
-        <collision name='collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.525129</radius>
-              <length>3.70228</length>
-            </cylinder>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
+        
         <visual name='visual'>
           <geometry>
             <cylinder>
@@ -3471,6 +2598,7 @@
       </link>
     </model>
     <model name='unit_cylinder_clone_44'>
+      <static>1</static>
       <pose>-11.1262 -8.57364 1.85113 0 -0 0.001264</pose>
       <link name='link'>
         <inertial>
@@ -3485,27 +2613,7 @@
           </inertia>
           <pose>0 0 0 0 -0 0</pose>
         </inertial>
-        <collision name='collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.525129</radius>
-              <length>3.70228</length>
-            </cylinder>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
+        
         <visual name='visual'>
           <geometry>
             <cylinder>
@@ -3526,6 +2634,7 @@
       </link>
     </model>
     <model name='unit_cylinder_clone_45'>
+      <static>1</static>
       <pose>-12.8587 -7.05267 1.85113 0 -0 0.001264</pose>
       <link name='link'>
         <inertial>
@@ -3540,27 +2649,7 @@
           </inertia>
           <pose>0 0 0 0 -0 0</pose>
         </inertial>
-        <collision name='collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.525129</radius>
-              <length>3.70228</length>
-            </cylinder>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
+        
         <visual name='visual'>
           <geometry>
             <cylinder>
@@ -3581,6 +2670,7 @@
       </link>
     </model>
     <model name='unit_cylinder_clone_46'>
+      <static>1</static>
       <pose>-13.4463 -9.76061 1.85113 0 -0 0.001264</pose>
       <link name='link'>
         <inertial>
@@ -3595,27 +2685,7 @@
           </inertia>
           <pose>0 0 0 0 -0 0</pose>
         </inertial>
-        <collision name='collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.525129</radius>
-              <length>3.70228</length>
-            </cylinder>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
+        
         <visual name='visual'>
           <geometry>
             <cylinder>
@@ -3636,6 +2706,7 @@
       </link>
     </model>
     <model name='unit_cylinder_clone_47'>
+      <static>1</static>
       <pose>-15.1133 -8.16886 1.85113 0 -0 0.001264</pose>
       <link name='link'>
         <inertial>
@@ -3650,27 +2721,7 @@
           </inertia>
           <pose>0 0 0 0 -0 0</pose>
         </inertial>
-        <collision name='collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.525129</radius>
-              <length>3.70228</length>
-            </cylinder>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
+        
         <visual name='visual'>
           <geometry>
             <cylinder>
@@ -3691,6 +2742,7 @@
       </link>
     </model>
     <model name='unit_cylinder_clone_48'>
+      <static>1</static>
       <pose>-11.4694 -11.7539 1.85113 0 -0 0.001264</pose>
       <link name='link'>
         <inertial>
@@ -3705,27 +2757,7 @@
           </inertia>
           <pose>0 0 0 0 -0 0</pose>
         </inertial>
-        <collision name='collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.525129</radius>
-              <length>3.70228</length>
-            </cylinder>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
+        
         <visual name='visual'>
           <geometry>
             <cylinder>
@@ -3746,6 +2778,7 @@
       </link>
     </model>
     <model name='unit_cylinder_clone_49'>
+      
       <pose>-13.9885 -12.0145 1.85113 0 -0 0.001264</pose>
       <link name='link'>
         <inertial>
@@ -3760,27 +2793,7 @@
           </inertia>
           <pose>0 0 0 0 -0 0</pose>
         </inertial>
-        <collision name='collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.525129</radius>
-              <length>3.70228</length>
-            </cylinder>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
+        
         <visual name='visual'>
           <geometry>
             <cylinder>

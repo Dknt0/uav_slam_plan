@@ -3,12 +3,17 @@
   <include file="$(find offboard)/launch/single_vehicle_spawn.launch">
     <arg name="vehicle" value="iris_depth_camera" />
     <arg name="world" value="$(find offboard)/world/avoidance.world" />
+    <!-- <arg name="world" value="$(find offboard)/world/indoor_1.world" /> -->
   </include>
 
-  <node pkg="tf" type="static_transform_publisher" name="uav"
-    args="0.0 0.0 0 0.0 0.0 0.0 /world /autopilot_odom 40" />
+  <node pkg="tf" type="static_transform_publisher" name="world_2_autopilot_odom"
+    args="0.0 0.0 0 0.0 0.0 0.0 /world /autopilot_odom 50" />
+  <node pkg="tf" type="static_transform_publisher" name="map_2_world"
+    args="0 0 0 0 0 0 /map /world 50" />
+  <!-- <node pkg="tf" type="static_transform_publisher" name="camera_2_odom"
+    args="0.1 0 0 1.57 1.57 0 /camera_link /autopilot_odom 50" /> -->
 
-  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find offboard)/config/rviz.config.rviz" />
+  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find offboard)/config/ego.config.rviz" />
 
   <!-- <node pkg="offboard" type="simple_test" name="simple_test" /> -->
 

@@ -54,3 +54,13 @@ target_link_libraries(position_test
   ${catkin_LIBRARIES}
   MAVSDK::mavsdk
 )
+
+add_executable(path_follow 
+  src/path_follow.cc
+  src/autopilot.cc
+  src/autopilot_ros1.cc
+)
+target_link_libraries(path_follow
+  ${catkin_LIBRARIES}
+  MAVSDK::mavsdk
+)

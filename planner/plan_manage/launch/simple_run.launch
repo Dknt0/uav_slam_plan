@@ -1,0 +1,6 @@
+ <launch>
+    <!-- 打开 rviz，加载配置 -->
+    <include file="$(find ego_planner)/launch/rviz.launch"/>
+    <!-- 生成地图，运行规划 -->
+    <include file="$(find ego_planner)/launch/swarm.launch"/>
+ </launch> 

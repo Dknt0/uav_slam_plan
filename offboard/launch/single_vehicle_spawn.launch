@@ -15,8 +15,8 @@
   <arg name="vehicle" default="iris_depth_camera" />
 
   <!-- <arg name="world" default="$(find mavlink_sitl_gazebo)/world/empty.world" /> -->
-  <!-- <arg name="world" default="$(find offboard)/world/indoor_1.world" /> -->
-  <arg name="world" default="$(find offboard)/world/avoidance.world" />
+  <arg name="world" default="$(find offboard)/world/indoor_1.world" />
+  <!-- <arg name="world" default="$(find offboard)/world/avoidance.world" /> -->
   <arg name="sdf" default="$(find mavlink_sitl_gazebo)/models/$(arg vehicle)/$(arg vehicle).sdf" />
 
   <!-- gazebo configs -->

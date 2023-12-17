@@ -22,6 +22,7 @@ AutopilotROS1::AutopilotROS1(ros::NodeHandle nh, const std::string port)
   });
 }
 
+/// @brief 发布里程计、相机位姿
 void AutopilotROS1::OdometryPub() {
   data_lock_.lock();
   Eigen::Vector3f position_frd{odometry_.position_body.x_m,
@@ -38,10 +39,9 @@ void AutopilotROS1::OdometryPub() {
       odometry_.angular_velocity_body.yaw_rad_s};
   data_lock_.unlock();
 
-  // 发布里程计消息
+  // 发布里程计
   nav_msgs::Odometry odom_msg;
-  // ROS 消息中统一使用 ROS 时间
-  odom_msg.header.stamp = ros::Time::now();
+  odom_msg.header.stamp = ros::Time::now();  // ROS 消息中统一使用 ROS 时间
   odom_msg.header.frame_id = "autopilot_odom";
   odom_msg.child_frame_id = "drone_frame";
 
@@ -80,7 +80,7 @@ void AutopilotROS1::OdometryPub() {
 
   odometry_pub_.publish(odom_msg);
 
-  // 发布相机位姿
+  // 发布相机位姿  z 前
   Eigen::Isometry3f Tbc(Eigen::Quaternionf(-0.5, 0.5, -0.5, 0.5));
   Tbc.pretranslate(Eigen::Vector3f(0.1, 0, 0));
 
@@ -91,8 +91,8 @@ void AutopilotROS1::OdometryPub() {
   geometry_msgs::PoseStamped camera_pose;
 
   camera_pose.header.stamp = ros::Time::now();
-  camera_pose.header.frame_id = "autopilot_odom";
-
+  camera_pose.header.frame_id = "autopilot_odom";  // 相对里程计坐标系
+  
   camera_pose.pose.position.x = t_wc[0];
   camera_pose.pose.position.y = t_wc[1];
   camera_pose.pose.position.z = t_wc[2];
