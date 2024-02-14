@@ -266,6 +266,44 @@ namespace ORB_SLAM2
         return mCurrentFrame.mTcw.clone();
     }
 
+    /// @brief RGBD 追踪  返回关键帧结果
+    /// @param imRGB 
+    /// @param imD 
+    /// @param timestamp 
+    /// @param bIsKeyFrame
+    /// @return 
+    cv::Mat Tracking::GrabImageRGBD_KF(const cv::Mat &imRGB, // 彩色图或灰度图
+                                    const cv::Mat &imD,   // 深度图
+                                    double timestamp,     // 时间戳
+                                    bool &bIsKeyFrame)
+    {
+        mImGray = imRGB;
+        cv::Mat imDepth = imD;
+
+        if (3 == mImGray.channels()) {
+            if(mbRGB)
+                cvtColor(mImGray,mImGray,CV_RGB2GRAY);
+            else
+                cvtColor(mImGray,mImGray,CV_BGR2GRAY);
+        } else if (4 == mImGray.channels()) {
+            if(mbRGB)
+                cvtColor(mImGray,mImGray,CV_RGBA2GRAY);
+            else
+                cvtColor(mImGray,mImGray,CV_BGRA2GRAY);
+        }
+        
+        // 深度转换 uint16 转 float，结果以米为单位
+        if((fabs(mDepthMapFactor-1.0f)>1e-5) || imDepth.type()!=CV_32F)
+            imDepth.convertTo(imDepth,CV_32F,mDepthMapFactor);
+
+        mCurrentFrame = Frame(mImGray, imDepth, timestamp,
+                              mpORBextractorLeft,
+                              mpORBVocabulary, mK, mDistCoef, mbf, mThDepth);
+
+        Track(bIsKeyFrame);
+        return mCurrentFrame.mTcw.clone();
+    }
+
     // 1. 若 im 是彩色图，则转换为灰度图
     // 2. 若当前尚未完成单目初始化，则以 mpIniORBextractor 为特征点提取器构建 Frame
     // 3. 否则以 mpORBextractorLeft 为特征点提取器构建 Frame
@@ -533,7 +571,237 @@ namespace ORB_SLAM2
     
     }
     
+    /// @brief 追踪返回关键帧判断结果  Dknt 2024.1.26
+    /// @param bIsKeyFrame 
+    void Tracking::Track(bool &bIsKeyFrame) {
+        bIsKeyFrame = false;
+
+        if (mState==NO_IMAGES_YET)
+            mState = NOT_INITIALIZED;
+        mLastProcessedState=mState;
     
+        // 对公共资源 mpMap 加锁
+        unique_lock<mutex> lock(mpMap->mMutexMapUpdate);
+
+        // 初始化
+        if(mState==NOT_INITIALIZED)
+        {
+            // 初始化
+            if(mSensor==System::STEREO || mSensor==System::RGBD)
+                StereoInitialization(); // 深度相机看作双目
+            else
+                MonocularInitialization(); // 单目初始化
+
+            mpFrameDrawer->Update(this);
+            if(mState!=OK)
+                return;
+        } else {
+            bool bOK; // 局部标志位是否追踪、重定位成功
+
+            /* 追踪一帧 */
+            // Initial camera pose estimation using motion model or relocalization (if tracking is lost)
+            if (!mbOnlyTracking) {
+                // SLAM 工作模式
+ 
+                if (OK == mState) {
+                    // Local Mapping might have changed some MapPoints tracked in last frame
+                    // 局部地图管理器可能会修改上一帧定位到的地图点
+                    CheckReplacedInLastFrame();
+                    
+                    // ?
+                    if (mVelocity.empty() || mCurrentFrame.mnId < mnLastRelocFrameId+2) {
+                        bOK = TrackReferenceKeyFrame(); // 根据关键帧跟踪更鲁棒？
+                    } else {
+                        bOK = TrackWithMotionModel(); // 根据匀速模型跟踪更快？
+                        if(!bOK)
+                            bOK = TrackReferenceKeyFrame();
+                    }
+                } else {
+                    bOK = Relocalization(); // 重定位
+                }
+            } else {
+                // 纯定位模式
+    
+                if(mState==LOST) {
+                    bOK = Relocalization(); // 跟丢就重定位
+                } else {
+                    if(!mbVO) { // 这个状态只用于纯定位模式
+                        // 上一帧中跟到了足够的地图点，正常定位模式
+                        // In last frame we tracked enough MapPoints in the map
+                        if(!mVelocity.empty())
+                            bOK = TrackWithMotionModel();
+                        else
+                            bOK = TrackReferenceKeyFrame();
+                    } else {
+                        // 上一帧没跟踪到足够地图点
+                        // In last frame we tracked mainly "visual odometry" points.
+    
+                        // We compute two camera poses, one from motion model and one doing relocalization.
+                        // If relocalization is sucessfull we choose that solution, otherwise we retain
+                        // the "visual odometry" solution.
+                        
+                        // 快跪了，通过匀速模型和重定位两种方式计算两个位姿
+                        // 如果重定位成功了，就采用重定位之后的结果
+    
+                        bool bOKMM = false;
+                        bool bOKReloc = false;
+                        vector<MapPoint*> vpMPsMM;
+                        vector<bool> vbOutMM;
+                        cv::Mat TcwMM;
+                        if(!mVelocity.empty()) {
+                            bOKMM = TrackWithMotionModel();
+                            vpMPsMM = mCurrentFrame.mvpMapPoints;
+                            vbOutMM = mCurrentFrame.mvbOutlier;
+                            TcwMM = mCurrentFrame.mTcw.clone();
+                        }
+                        bOKReloc = Relocalization();
+    
+                        if(bOKMM && !bOKReloc) { // 运动模型成功，重定位失败
+                            mCurrentFrame.SetPose(TcwMM);
+                            mCurrentFrame.mvpMapPoints = vpMPsMM;
+                            mCurrentFrame.mvbOutlier = vbOutMM;
+    
+                            if (mbVO) {
+                                for(int i =0; i<mCurrentFrame.N; i++) {
+                                    if(mCurrentFrame.mvpMapPoints[i] && !mCurrentFrame.mvbOutlier[i])
+                                        mCurrentFrame.mvpMapPoints[i]->IncreaseFound(); // ？
+                                }
+                            }
+                        } else if(bOKReloc) {
+                            mbVO = false; // 重定位成功，恢复正常模式
+                        }
+    
+                        bOK = bOKReloc || bOKMM;
+                    }
+                }
+            }
+    
+            // 更新参考关键帧
+            mCurrentFrame.mpReferenceKF = mpReferenceKF;
+
+            /* 局部 BA */
+            // If we have an initial estimation of the camera pose and matching. Track the local map.
+            if(!mbOnlyTracking)
+            {
+                // SLAM 模式
+                if(bOK)
+                    bOK = TrackLocalMap();
+            }
+            else
+            {
+                // 纯定位模式  定位模式还有局部地图？
+                // 要跪了，局部地图不好使了
+                // mbVO true means that there are few matches to MapPoints in the map. We cannot retrieve
+                // a local map and therefore we do not perform TrackLocalMap(). Once the system relocalizes
+                // the camera we will use the local map again.
+                if(bOK && !mbVO)
+                    bOK = TrackLocalMap();
+            }
+    
+            if(bOK)
+                mState = OK;
+            else
+                mState=LOST;
+    
+            // Update drawer
+            mpFrameDrawer->Update(this);
+
+            /* 更新运动模型，关键帧判断 */
+            // If tracking were good, check if we insert a keyframe
+            if(bOK)
+            {
+                // 更新运动模型
+                if(!mLastFrame.mTcw.empty())
+                {
+                    cv::Mat LastTwc = cv::Mat::eye(4,4,CV_32F);
+                    mLastFrame.GetRotationInverse().copyTo(LastTwc.rowRange(0,3).colRange(0,3));
+                    mLastFrame.GetCameraCenter().copyTo(LastTwc.rowRange(0,3).col(3));
+                    mVelocity = mCurrentFrame.mTcw*LastTwc; // 两帧间的相对位姿态，并不是速度
+                }
+                else
+                    mVelocity = cv::Mat(); // 空
+    
+                mpMapDrawer->SetCurrentCameraPose(mCurrentFrame.mTcw);
+    
+                // Clean VO matches
+                for(int i=0; i<mCurrentFrame.N; i++)
+                {
+                    // 对于当前帧中的一个地图点，如果没有一个关键帧观测到它，就舍弃
+                    MapPoint* pMP = mCurrentFrame.mvpMapPoints[i]; // 地图点与特征点对应
+                    if(pMP)
+                        if(pMP->Observations()<1)
+                        {
+                            mCurrentFrame.mvbOutlier[i] = false;
+                            mCurrentFrame.mvpMapPoints[i]=static_cast<MapPoint*>(NULL); // 舍弃
+                        }
+                }
+    
+                // 清空临时的地图点容器
+                for(list<MapPoint*>::iterator lit = mlpTemporalPoints.begin(), lend =  mlpTemporalPoints.end(); lit!=lend; lit++)
+                {
+                    MapPoint* pMP = *lit;
+                    delete pMP;
+                }
+                mlpTemporalPoints.clear();
+
+                // 关键帧判断
+                // Check if we need to insert a new keyframe
+                if(NeedNewKeyFrame()) {
+                    CreateNewKeyFrame();
+                    bIsKeyFrame = true;
+                }
+    
+                // 生成关键帧的时候，可以携带着外点一起生成，由 BA 优化器来具体判定是否是真的外点
+                // 但在轨迹跟踪的过程中，并不希望这些外点参与下一帧的位姿估计
+                // We allow points with high innovation (considererd outliers by the Huber Function)
+                // pass to the new keyframe, so that bundle adjustment will finally decide
+                // if they are outliers or not. We don't want next frame to estimate its position
+                // with those points so we discard them in the frame.
+                for(int i=0; i<mCurrentFrame.N;i++)
+                {
+                    if(mCurrentFrame.mvpMapPoints[i] && mCurrentFrame.mvbOutlier[i])
+                        mCurrentFrame.mvpMapPoints[i]=static_cast<MapPoint*>(NULL);
+                }
+            }
+    
+            // 刚初始化完就跟丢了，很可能是初始化结果不好，重新来一遍
+            // Reset if the camera get lost soon after initialization
+            if(mState==LOST)
+            {
+                if(mpMap->KeyFramesInMap()<=5)
+                {
+                    cout << "Track lost soon after initialisation, reseting..." << endl;
+                    mpSystem->Reset();
+                    return;
+                }
+            }
+    
+            if(!mCurrentFrame.mpReferenceKF)
+                mCurrentFrame.mpReferenceKF = mpReferenceKF;
+    
+            mLastFrame = Frame(mCurrentFrame);
+        }
+    
+        // Store frame pose information to retrieve the complete camera trajectory afterwards.
+        if(!mCurrentFrame.mTcw.empty())
+        {
+            // 跟踪成功
+            cv::Mat Tcr = mCurrentFrame.mTcw*mCurrentFrame.mpReferenceKF->GetPoseInverse(); // Tcw * Twr
+            mlRelativeFramePoses.push_back(Tcr); // 相对于参考帧的位姿
+            mlpReferences.push_back(mpReferenceKF); // 参考关键帧指针
+            mlFrameTimes.push_back(mCurrentFrame.mTimeStamp); // 时间戳
+            mlbLost.push_back(mState==LOST);
+        }
+        else
+        {
+            // This can happen if tracking is lost  复制前一帧
+            mlRelativeFramePoses.push_back(mlRelativeFramePoses.back());
+            mlpReferences.push_back(mlpReferences.back());
+            mlFrameTimes.push_back(mlFrameTimes.back());
+            mlbLost.push_back(mState==LOST);
+        }
+    }
+
     void Tracking::StereoInitialization()
     {
         // 提取特征点多于 500 个，则创建关键帧

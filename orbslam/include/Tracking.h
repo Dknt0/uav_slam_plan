@@ -88,6 +88,8 @@ public:
     //! @return 相机位姿
     cv::Mat GrabImageRGBD(const cv::Mat &imRGB,const cv::Mat &imD, double timestamp);
 
+    cv::Mat GrabImageRGBD_KF(const cv::Mat &imRGB,const cv::Mat &imD, double timestamp, bool &bIsKeyFrame);
+
     //! @brief 预处理输入图像数据，调用 Track 函数完成相机位姿跟踪
     //!
     //! 提取RGB图像特征，实现单目相机的跟踪
@@ -197,6 +199,8 @@ protected:
     //! @brief 具体执行相机位姿跟踪任务的函数
     //! 它的运行过程只用到了特征点，与输入的传感器类型没有关系。
     void Track();
+
+    void Track(bool &bIsKeyFrame);
 
     //! @brief 双目相机和深度相机的初始化函数
     void StereoInitialization();

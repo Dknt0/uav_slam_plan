@@ -87,6 +87,8 @@ public:
     //! @return 相机位姿，如果跟丢了将返回一个空的 cv::Mat.
     cv::Mat TrackRGBD(const cv::Mat &im, const cv::Mat &depthmap, const double &timestamp);
 
+    cv::Mat TrackRGBD_KF(const cv::Mat &im, const cv::Mat &depthmap, const double &timestamp, bool &bIsKeyFrame);
+
     //! @brief 跟踪单目相机
     //! @param [in] im RGB图像可以是彩色图(CV_8UC3)或者灰度图(CV_8U)，彩色图将被转换为灰度图后使用
     //! @param [in] timestamp 时间戳
